@@ -1,0 +1,8 @@
+1) Saldo da empresa não está sendo atualizado juntamente com o valor deduzido das taxas;
+Foi criada uma variável para efetuar este cálculo para ser apresentado.
+
+2) Cliente está comprando produtos que não constam na empresa.
+ Após a escolha da empresa, foi feito um filtrodos produtos da empesa. Caso não seja localizado, será apresentada a mensagem "Produto não encontrado"
+
+3) Tanto Admin como empresas efetuarem a listagem dos dados internos.
+Sendo analisado o acesso como Admin. Após feito isso será apresentado um menu com a opção das empresas para poder acomopanhar seus dados.
