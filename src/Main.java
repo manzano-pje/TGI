@@ -57,15 +57,30 @@ public class Main {
 		System.out.print("Senha: ");
 		String senha = sc.next();
 		
-
 		List<Usuario> usuariosSearch = usuarios.stream().filter(x -> x.getUsername().equals(username))
 				.collect(Collectors.toList());
 		if (usuariosSearch.size() > 0) {
 			Usuario usuarioLogado = usuariosSearch.get(0);
 			if ((usuarioLogado.getSenha().equals(senha))) {
 
+				/******** */
+				empresas.forEach(empresa -> {
+					System.out.println(empresa.getId() + " - " + empresa.getNome());
+				});
+				Integer empresaEscolhida = sc.nextInt();
+				List<Empresa> empresaSearch = empresas.stream().filter(x -> x.getId().equals(empresaEscolhida))
+				.collect(Collectors.toList());
+				
+				usuariosSearch = usuarios.stream().filter(x -> x.getUsername().equals(empresaSearch.get(0).getNome()))
+				.collect(Collectors.toList());
+				if (usuariosSearch.size() > 0) {
+					usuarioLogado = usuariosSearch.get(0);
+				}
+				/******** */
+
 				System.out.println("Escolha uma opção para iniciar");
-				if (usuarioLogado.IsEmpresa()) {
+				
+				if (usuarioLogado.IsEmpresa() | usuarioLogado.IsAdmin()) {
 					System.out.println("1 - Listar vendas");
 					System.out.println("2 - Ver produtos");
 					System.out.println("0 - Deslogar");
@@ -92,7 +107,11 @@ public class Main {
 							}
 
 						});
-						System.out.println("Saldo Empresa: " + usuarioLogado.getEmpresa().getSaldo());
+						
+						Double vlSaldo = usuarioLogado.getEmpresa().getSaldo() - (usuarioLogado.getEmpresa().getSaldo() * usuarioLogado.getEmpresa().getTaxa());
+					
+						System.out.println("Saldo Empresa: " +  vlSaldo);
+
 						System.out.println("************************************************************");
 
 						executar(usuarios, clientes, empresas, produtos, carrinho, vendas);
@@ -119,9 +138,8 @@ public class Main {
 					}
 					case 0: {
 						executar(usuarios, clientes, empresas, produtos, carrinho, vendas);
-
 					}
-					}
+				}
 
 				} else {
 					System.out.println("1 - Relizar Compras");
@@ -135,19 +153,34 @@ public class Main {
 							System.out.println(x.getId() + " - " + x.getNome());
 						});
 						Integer escolhaEmpresa = sc.nextInt();
+
+						List<Produto> produtosDaEmpresaEscolhida = produtos.stream()
+						.filter(produto -> produto.getEmpresa().getId().equals(escolhaEmpresa))
+						.collect(Collectors.toList());
+
 						Integer escolhaProduto = -1;
 						do {
 							System.out.println("Escolha os seus produtos: ");
-							produtos.stream().forEach(x -> {
-								if (x.getEmpresa().getId().equals(escolhaEmpresa)) {
-									System.out.println(x.getId() + " - " + x.getNome());
-								}
+
+							produtosDaEmpresaEscolhida.forEach(produto -> {
+								System.out.println(produto.getId() + " - " + produto.getNome());
 							});
+
 							System.out.println("0 - Finalizar compra");
 							escolhaProduto = sc.nextInt();
-							for (Produto produtoSearch : produtos) {
-								if (produtoSearch.getId().equals(escolhaProduto))
-									carrinho.add(produtoSearch);
+							Integer filtroProduto = escolhaProduto;
+
+							if (escolhaProduto != 0) {
+								Produto produtoEscolhido = produtosDaEmpresaEscolhida.stream()
+									.filter(produto -> produto.getId().equals(filtroProduto))
+									.findFirst()
+									.orElse(null);
+								
+								if (produtoEscolhido != null) {
+									carrinho.add(produtoEscolhido);
+								} else {
+									System.out.println("Produto não encontrado.");
+								}
 							}
 						} while (escolhaProduto != 0);
 						System.out.println("************************************************************");
