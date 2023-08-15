@@ -63,7 +63,7 @@ public class Main {
 			Usuario usuarioLogado = usuariosSearch.get(0);
 			if ((usuarioLogado.getSenha().equals(senha))) {
 
-				/******** */
+				/******** 
 				empresas.forEach(empresa -> {
 					System.out.println(empresa.getId() + " - " + empresa.getNome());
 				});
